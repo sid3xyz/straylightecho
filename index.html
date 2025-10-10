@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StraylightEcho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://css.gg/css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #E0E0E0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        
+        #fluid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .neon-glow {
+            text-shadow:
+                0 0 5px rgba(97, 218, 251, 0.7),
+                0 0 10px rgba(97, 218, 251, 0.5),
+                0 0 20px rgba(97, 218, 251, 0.3);
+            color: #E0E0E0;
+        }
+    </style>
+</head>
+<body class="bg-black">
+    <!-- Background canvas -->
+    <canvas id="fluid-background"></canvas>
+
+    <!-- Main Content Container -->
+    <div class="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 text-center">
+        
+        <div class="w-full max-w-4xl mx-auto flex flex-col items-center gap-8">
+            <header class="w-full mx-auto bg-gray-900/10 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl shadow-black/50 p-6 md:p-10">
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold font-mono tracking-wider neon-glow">
+                    StraylightEcho
+                </h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+                    A quiet corner of the net for deep work and genuine connection. The signal in the noise.
+                </p>
+            </header>
+
+            <main class="w-full max-w-4xl mx-auto flex flex-col items-center gap-8">
+                
+                <section class="w-full bg-gray-900/10 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl shadow-black/50 p-6 md:p-10">
+                    <h2 class="text-2xl font-bold neon-glow">TRANSMISSION INCOMING...</h2>
+                    <p class="mt-3 text-gray-400 max-w-xl mx-auto">
+                        In the sprawling matrix of the digital age, where neon-lit connections flicker like distant stars yet leave souls adrift, StraylightEcho emerges as a beacon. This platform whispers of hope amid despair, transforming lonely echoes into symphonies of collaboration. Here, we invite kindred spirits to weave threads of genuine communion, defying the cold algorithms that bind us in beautiful, brutal disconnection.
+                    </p>
+                </section>
+
+                <section id="features" class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                    <div class="p-6 rounded-xl bg-gray-900/10 backdrop-blur-md border border-white/10 shadow-lg shadow-black/50 hover:border-cyan-500/50 transition-colors duration-300">
+                        <h3 class="text-xl font-bold text-cyan-400">Beyond Algorithms</h3>
+                        <p class="mt-2 text-gray-400">A space free from the influence of engagement metrics and curated feeds. Your thoughts, unfiltered.</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-gray-900/10 backdrop-blur-md border border-white/10 shadow-lg shadow-black/50 hover:border-cyan-500/50 transition-colors duration-300">
+                        <h3 class="text-xl font-bold text-cyan-400">Deep Collaboration</h3>
+                        <p class="mt-2 text-gray-400">Tools and channels designed for focused, meaningful creation. Find your collaborators.</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-gray-900/10 backdrop-blur-md border border-white/10 shadow-lg shadow-black/50 hover:border-cyan-500/50 transition-colors duration-300">
+                        <h3 class="text-xl font-bold text-cyan-400">Radical Authenticity</h3>
+                        <p class="mt-2 text-gray-400">An environment that values genuine interaction over performance. Connect on a human level.</p>
+                    </div>
+                </section>
+            </main>
+            
+            <footer class="w-full max-w-4xl mx-auto bg-gray-900/10 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl shadow-black/50 p-6">
+                <p class="text-sm text-gray-500">&copy; 2025 StraylightEcho. All rights reserved. System Initializing.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // -- Vertical Fluid "Data Stream" effect --
+        (function() {
+            const canvas = document.getElementById('fluid-background');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let w, h;
+            let streams = [];
+            let whiteRabbit = null;
+
+            const words = [
+                'SPRAWLING', 'MATRIX', 'DIGITAL', 'NEON', 'CONNECTIONS', 'FLICKER', 
+                'STARS', 'SOULS', 'ADRIFT', 'VAST', 'ECHOING', 'VOIDS', 'BEACON', 
+                'PIERCE', 'ISOLATION', 'SOLITUDE', 'PLATFORM', 'WHISPERS', 'HOPE', 
+                'DESPAIR', 'TRANSFORMING', 'LONELY', 'ECHOES', 'TURMOIL', 'SYMPHONIES', 
+                'COLLABORATION', 'FRIENDSHIP', 'CODE', 'CHATTER', 'KINDRED', 'SPIRITS', 
+                'DEFYING', 'ALGORITHMS', 
+                'DISCONNECTION'
+            ];
+
+            const allRabbits = [
+                `                  ___     ___
+                 /   \\   /   \\
+                /   / \\_/ \\   \\
+                \\__/\\     /\\__/
+                     \\O O/
+                  ___/ ^ \\___
+                     \\___/`.split('\n'),
+                `                  _         _
+                 /_\\       /_\\
+                 \\\\\\\\     ////
+                  \\\\\\\\   ////
+                   \\\\\\\\_////
+                    \\     /
+                     \\@ @/
+                  ___/ ^ \\___`.split('\n'),
+                `                    __   __
+                   /  \\_/  \\
+                  /  /   \\  \\
+                 /  /\\x x/\\  \\
+                 \\_/_/ ^ \\_\\_/
+                   / \\___/ \\`.split('\n'),
+                 `                      _     _
+                     /_\\   /_\\
+                    ////  ////
+                   ////  ////
+                   \\\\\\\\_////
+                    \\     /
+                     \\O O/
+                  ___/ ^ \\___
+                     \\___/`.split('\n'),
+            ];
+            
+            const crypticPhrases = [
+                'The signal is the noise.',
+                'Find the echo.',
+                'Follow the thread.',
+                'Are you listening?',
+                'The void stares back.',
+                'Connection is a ghost.',
+                'Defy the algorithm.',
+                'A whisper in the static.',
+                'Beyond the firewall.',
+                'Is this real?'
+            ];
+
+            // Class for a single character "raindrop"
+            class Symbol {
+                constructor(x, y, speed, first, value) {
+                    this.x = x;
+                    this.y = y;
+                    this.speed = speed;
+                    this.first = first; // Is this the leading, brightest character?
+                    this.value = value;
+                }
+
+                draw(fontSize) {
+                    ctx.font = `${fontSize}px 'Roboto Mono', monospace`;
+                    // The leading character is brighter and white
+                    if (this.first) {
+                        ctx.fillStyle = 'rgba(220, 255, 255, 1)';
+                        ctx.shadowColor = 'rgba(200, 255, 255, 1)';
+                        ctx.shadowBlur = 10;
+                    } else {
+                        // Trailing characters are the cyberpunk blue
+                        ctx.fillStyle = 'rgba(97, 218, 251, 0.6)';
+                        ctx.shadowColor = 'rgba(97, 218, 251, 0.7)';
+                        ctx.shadowBlur = 8;
+                    }
+                    ctx.fillText(this.value, this.x, this.y);
+                }
+            }
+
+            // Class for a vertical stream of characters that form a word
+            class Stream {
+                constructor(x) {
+                    this.x = x;
+                    this.symbols = [];
+                    this.speed = Math.random() * 1.5 + 0.5;
+                    this.phase = Math.random() * Math.PI * 2;
+                    this.amplitude = Math.random() * 5 + 2; // Reduced sway
+                    this.fontSize = Math.random() * 8 + 12; // Random size
+                    this.word = '';
+                    this.generateSymbols();
+                }
+
+                generateSymbols() {
+                    this.symbols = [];
+                    this.word = words[Math.floor(Math.random() * words.length)];
+                    const totalSymbols = this.word.length;
+                    
+                    let y = Math.random() * -h;
+                    for (let i = 0; i < totalSymbols; i++) {
+                        const isFirst = (i === totalSymbols - 1);
+                        const character = this.word.charAt(i);
+                        const symbol = new Symbol(this.x, y, this.speed, isFirst, character);
+                        this.symbols.push(symbol);
+                        y += this.fontSize; // Use randomized size for spacing
+                    }
+                }
+
+                updateAndDraw() {
+                    this.symbols.forEach(symbol => {
+                        symbol.y += this.speed;
+                        const xOffset = Math.sin(symbol.y / 20 + this.phase) * this.amplitude;
+                        symbol.x = this.x + xOffset;
+                        symbol.draw(this.fontSize);
+                    });
+
+                    const lastSymbol = this.symbols[this.symbols.length - 1];
+                    if (lastSymbol && lastSymbol.y > h) {
+                        this.generateSymbols();
+                    }
+                }
+            }
+
+            // Class for the falling white rabbit
+            class WhiteRabbit {
+                constructor() {
+                    this.fontSize = Math.random() * 6 + 14; // Rabbit has its own random size
+                    const maxArtWidth = Math.max(...allRabbits.map(art => Math.max(...art.map(line => line.length))));
+                    const maxPhraseWidth = Math.max(...crypticPhrases.map(p => p.length));
+                    const totalPossibleWidth = (maxArtWidth + maxPhraseWidth) * (this.fontSize * 0.7);
+
+                    this.baseX = Math.random() * (w - totalPossibleWidth - 20);
+                    this.x = this.baseX;
+                    this.y = -150; 
+                    this.speed = Math.random() * 1 + 0.5;
+                    this.phase = Math.random() * Math.PI * 2;
+                    this.amplitude = Math.random() * 10 + 5; // Reduced sway
+
+                    this.lines = allRabbits[Math.floor(Math.random() * allRabbits.length)];
+                    this.phrase = crypticPhrases[Math.floor(Math.random() * crypticPhrases.length)];
+                }
+
+                updateAndDraw() {
+                    this.y += this.speed;
+                    const xOffset = Math.sin(this.y / 30 + this.phase) * this.amplitude;
+                    this.x = this.baseX + xOffset;
+
+                    ctx.font = `${this.fontSize}px 'Roboto Mono', monospace`;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+                    ctx.shadowBlur = 10;
+
+                    let currentY = this.y;
+                    let artWidth = 0;
+                    for (const line of this.lines) {
+                        ctx.fillText(line, this.x, currentY);
+                        currentY += this.fontSize; // Use random size for line spacing
+                        if(line.length > artWidth) artWidth = line.length;
+                    }
+                    
+                    const phraseX = this.x + artWidth * (this.fontSize * 0.55);
+                    const phraseY = this.y + (this.lines.length / 2) * this.fontSize;
+                    ctx.fillText(`"${this.phrase}"`, phraseX, phraseY);
+                }
+
+                isOffscreen() {
+                    return this.y > h;
+                }
+            }
+            
+            function animate() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.fillRect(0, 0, w, h);
+                
+                streams.forEach(stream => stream.updateAndDraw());
+
+                if (!whiteRabbit && Math.random() < 0.008) {
+                    whiteRabbit = new WhiteRabbit();
+                }
+
+                if (whiteRabbit) {
+                    whiteRabbit.updateAndDraw();
+                    if (whiteRabbit.isOffscreen()) {
+                        whiteRabbit = null;
+                    }
+                }
+                
+                ctx.shadowBlur = 0;
+                
+                requestAnimationFrame(animate);
+            }
+
+            function setup() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                streams = [];
+                whiteRabbit = null; 
+                const columnWidth = 40; // Increased static column width for safety
+                const columnCount = Math.floor(w / columnWidth);
+                for (let i = 0; i < columnCount; i++) {
+                    streams.push(new Stream(i * columnWidth));
+                }
+            }
+
+            setup();
+            animate();
+            
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(setup, 200);
+            });
+        })();
+    </script>
+</body>
+</html>
+
