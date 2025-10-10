@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "irc-framework": "^4.14.0"
+  }
+}

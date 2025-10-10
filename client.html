@@ -103,12 +103,21 @@
     <!-- Import Three.js and PointerLockControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="node_modules/irc-framework/browser/irc-framework.min.js"></script>
 
     <script>
         // A retro-cyberpunk "Straylight" virtual world using Three.js
 
+        // Cache DOM elements for performance
+        const instructions = document.getElementById('instructions');
+        const hud = document.getElementById('hud');
+        const chatLog = document.getElementById('chat-log');
+        const userList = document.getElementById('users').querySelector('ul');
+        const chatInput = document.querySelector('#chat-input input[type="text"]');
+
         let scene, camera, renderer, controls;
         let dataCubes = [], particleSystem, straylightBeacon;
+        const messageCubes = [];
         
         // Movement variables
         let moveForward = false;
@@ -120,35 +129,38 @@
         let prevTime = performance.now();
         let chatMode = false;
 
+        // IRC Client
+        const ircClient = new IRC.Client();
+
         function init() {
-            // --- Scene Setup ---
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.025); // Darker, denser fog
+            try {
+                // --- Scene Setup ---
+                scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x000000, 0.025); // Darker, denser fog
 
-            // --- Camera Setup ---
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 10, 30);
+                // --- Camera Setup ---
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 10, 30);
 
-            // --- Renderer Setup ---
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setClearColor(scene.fog.color);
-            document.body.appendChild(renderer.domElement);
+                // --- Renderer Setup ---
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setClearColor(scene.fog.color);
+                document.body.appendChild(renderer.domElement);
 
             // --- Controls (First-Person) ---
             controls = new THREE.PointerLockControls(camera, document.body);
-            const instructions = document.getElementById('instructions');
             instructions.addEventListener('click', () => {
                 controls.lock();
             });
             controls.addEventListener('lock', () => {
                 instructions.style.display = 'none';
-                document.getElementById('hud').style.display = 'grid';
+                hud.style.display = 'grid';
             });
             controls.addEventListener('unlock', () => {
                 instructions.style.display = 'flex';
-                document.getElementById('hud').style.display = 'none';
+                hud.style.display = 'none';
             });
             scene.add(controls.getObject());
 
@@ -240,6 +252,10 @@
 
             // --- Event Listeners ---
             window.addEventListener('resize', onWindowResize, false);
+            } catch (error) {
+                console.error('Error initializing Three.js:', error);
+                alert('Failed to initialize the 3D environment. Please check your browser compatibility.');
+            }
         }
 
         function onWindowResize() {
@@ -248,8 +264,22 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
+        function animateCubes() {
+            for (let i = messageCubes.length - 1; i >= 0; i--) {
+                const cubeData = messageCubes[i];
+                cubeData.life -= 1;
+                cubeData.cube.material.opacity = cubeData.life / 100; // Fade out
+
+                if (cubeData.life <= 0) {
+                    scene.remove(cubeData.cube);
+                    messageCubes.splice(i, 1); // Remove expired cubes
+                }
+            }
+        }
+
         function animate() {
             requestAnimationFrame(animate);
+            animateCubes();
 
             const time = performance.now();
             const delta = (time - prevTime) / 1000;
@@ -289,7 +319,6 @@
 
         function toggleChatMode() {
             chatMode = !chatMode;
-            const chatInput = document.querySelector('#chat-input input');
             if (chatMode) {
                 chatInput.focus();
             } else {
@@ -297,9 +326,115 @@
             }
         }
 
-        // --- Start the experience ---
-        init();
-        animate();
+        // Initialize IRC client
+        ircClient.connect({
+            host: 'irc.slirc.net',
+            port: 6667,
+            nick: 'StraylightUser'
+        });
+
+        ircClient.on('registered', () => {
+            console.log('Connected to IRC server');
+            ircClient.join('#straylight');
+        });
+
+        ircClient.on('message', (event) => {
+            if (chatLog) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `[${event.nick}] ${event.message}`;
+                messageElement.style.color = '#0ff';
+                messageElement.style.marginBottom = '5px';
+                chatLog.appendChild(messageElement);
+
+                // Auto-scroll to the bottom of the chat log
+                chatLog.scrollTop = chatLog.scrollHeight;
+            }
+
+            // Create a glowing cube for the message
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.8 });
+            const cube = new THREE.Mesh(geometry, material);
+
+            // Position the cube randomly in the scene
+            cube.position.set(
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 50
+            );
+
+            scene.add(cube);
+            messageCubes.push({ cube, life: 100 }); // Add cube with a lifespan
+        });
+
+        ircClient.on('names', (event) => {
+            if (event.channel === '#straylight') {
+                const fragment = document.createDocumentFragment();
+                Object.keys(event.users).forEach((nick) => {
+                    const userElement = document.createElement('li');
+                    userElement.textContent = nick;
+                    fragment.appendChild(userElement);
+                });
+                userList.innerHTML = ''; // Clear the current list
+                userList.appendChild(fragment);
+            }
+        });
+
+        ircClient.on('join', (event) => {
+            if (event.channel === '#straylight') {
+                const userElement = document.createElement('li');
+                userElement.textContent = event.nick;
+                userList.appendChild(userElement);
+            }
+        });
+
+        ircClient.on('part', (event) => {
+            if (event.channel === '#straylight') {
+                const userElements = userList.querySelectorAll('li');
+                userElements.forEach((el) => {
+                    if (el.textContent === event.nick) {
+                        el.remove();
+                    }
+                });
+            }
+        });
+
+        ircClient.on('error', (error) => {
+            console.error('IRC Error:', error);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (ircClient) {
+                ircClient.quit('Leaving Straylight');
+            }
+            // Dispose Three.js resources
+            if (renderer) {
+                renderer.dispose();
+            }
+            // Remove event listeners if needed
+        });
+
+        // Chat input event listener
+        if (chatInput) {
+            chatInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && chatInput.value.trim() !== '') {
+                    const message = chatInput.value.trim();
+                    ircClient.say('#straylight', message);
+
+                    // Optionally, display the sent message in the chat log
+                    if (chatLog) {
+                        const messageElement = document.createElement('div');
+                        messageElement.textContent = `[You] ${message}`;
+                        messageElement.style.color = '#0ff';
+                        messageElement.style.marginBottom = '5px';
+                        chatLog.appendChild(messageElement);
+                        chatLog.scrollTop = chatLog.scrollHeight;
+                    }
+
+                    chatInput.value = ''; // Clear the input field
+                }
+            });
+        }
     </script>
 </body>
 </html>
