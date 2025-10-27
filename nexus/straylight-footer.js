@@ -34,13 +34,18 @@ class StraylightFooter {
     }
     
     inject() {
-        // Inject CSS if not already present
+        // Inject CSS if not already present (use relative path for host site)
         if (!document.querySelector('#straylight-footer-styles')) {
             const cssLink = document.createElement('link');
             cssLink.id = 'straylight-footer-styles';
             cssLink.rel = 'stylesheet';
-            cssLink.href = 'https://straylightecho.com/nexus/straylight-footer.css';
-            cssLink.crossOrigin = 'anonymous';
+            // Use relative path if we're on straylightecho.com, absolute for others
+            cssLink.href = window.location.hostname === 'straylightecho.com' ? 
+                'nexus/straylight-footer.css' : 
+                'https://straylightecho.com/nexus/straylight-footer.css';
+            if (window.location.hostname !== 'straylightecho.com') {
+                cssLink.crossOrigin = 'anonymous';
+            }
             document.head.appendChild(cssLink);
         }
         
@@ -63,6 +68,7 @@ class StraylightFooter {
 
 // Auto-inject footer when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('STRAYLIGHT Footer: DOM ready, injecting footer...');
     const footer = new StraylightFooter();
     footer.inject();
 });
@@ -70,10 +76,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Fallback for immediate execution
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('STRAYLIGHT Footer: Loading state, waiting for DOM...');
         const footer = new StraylightFooter();
         footer.inject();
     });
 } else {
+    console.log('STRAYLIGHT Footer: DOM already loaded, injecting immediately...');
     const footer = new StraylightFooter();
     footer.inject();
 }
