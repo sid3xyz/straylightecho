@@ -1,6 +1,6 @@
 # StraylightEcho.com - Interactive 3D IRC Network Hub
 
-The official website for the Straylight IRC Network featuring an immersive 3D interface and community portal.
+The official 3D interface for the Straylight IRC Network, created by sid3.xyz, featuring an immersive 3D interface and community portal.
 
 ## Features
 
