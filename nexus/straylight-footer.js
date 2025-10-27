@@ -1,3 +1,6 @@
+// STRAYLIGHT Footer - GonzoAdmin Terminal
+console.log('STRAYLIGHT Footer loading...');
+
 class StraylightFooter {
     constructor() {
         this.sessionComments = [
@@ -34,20 +37,7 @@ class StraylightFooter {
     }
     
     inject() {
-        // Inject CSS if not already present (use relative path for host site)
-        if (!document.querySelector('#straylight-footer-styles')) {
-            const cssLink = document.createElement('link');
-            cssLink.id = 'straylight-footer-styles';
-            cssLink.rel = 'stylesheet';
-            // Use relative path if we're on straylightecho.com, absolute for others
-            cssLink.href = window.location.hostname === 'straylightecho.com' ? 
-                'nexus/straylight-footer.css' : 
-                'https://straylightecho.com/nexus/straylight-footer.css';
-            if (window.location.hostname !== 'straylightecho.com') {
-                cssLink.crossOrigin = 'anonymous';
-            }
-            document.head.appendChild(cssLink);
-        }
+        console.log('Injecting STRAYLIGHT footer...');
         
         // Create footer HTML
         const footerHTML = `
@@ -63,25 +53,22 @@ class StraylightFooter {
         // Inject footer at end of body
         document.body.insertAdjacentHTML('beforeend', footerHTML);
         document.body.classList.add('has-straylight-footer');
+        console.log('STRAYLIGHT footer injected successfully');
     }
 }
 
 // Auto-inject footer when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('STRAYLIGHT Footer: DOM ready, injecting footer...');
+    console.log('DOM ready, creating STRAYLIGHT footer...');
     const footer = new StraylightFooter();
     footer.inject();
 });
 
 // Fallback for immediate execution
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('STRAYLIGHT Footer: Loading state, waiting for DOM...');
-        const footer = new StraylightFooter();
-        footer.inject();
-    });
-} else {
-    console.log('STRAYLIGHT Footer: DOM already loaded, injecting immediately...');
+if (document.readyState !== 'loading') {
+    console.log('DOM already loaded, creating STRAYLIGHT footer immediately...');
     const footer = new StraylightFooter();
     footer.inject();
 }
+
+console.log('STRAYLIGHT Footer script loaded');
