@@ -1,0 +1,294 @@
+/* 
+STRAYLIGHT ECOSYSTEM CONTROL BAR
+Retro-Futuristic Header Component
+Inspired by Neuromancer, cyberpunk aesthetics, and classic AOL interfaces
+*/
+
+/* Import retro-futuristic fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Jura:wght@300;400;500;600;700&display=swap');
+
+/* STRAYLIGHT Control Bar Container */
+.straylight-control-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    border-bottom: 1px solid #00ff41;
+    box-shadow: 0 2px 10px rgba(0, 255, 65, 0.2);
+    height: 48px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 14px;
+    color: #00ff41;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Subtle scan line animation */
+.straylight-control-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00ff41, transparent);
+    animation: scanline 15s infinite linear;
+    opacity: 0.3;
+}
+
+@keyframes scanline {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Three-section layout */
+.straylight-control-bar .control-sections {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Section: STATUS / BRAND (Left) */
+.control-brand {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 12px;
+}
+
+.straylight-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #00ff41;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.straylight-logo:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px #00ff41;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #888;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    background: #00ff41;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Section: MAIN NAVIGATION (Center) */
+.control-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.nav-link {
+    color: #888;
+    text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 4px 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.nav-link:hover {
+    color: #00ff41;
+    background: rgba(0, 255, 65, 0.1);
+    border-color: #00ff41;
+}
+
+.nav-link.active {
+    color: #ffffff;
+    background: rgba(0, 255, 65, 0.2);
+    border-color: #00ff41;
+}
+
+.nav-link.active::before {
+    content: '[ ';
+    color: #00ff41;
+}
+
+.nav-link.active::after {
+    content: ' ]';
+    color: #00ff41;
+}
+
+/* Section: SYSTEM / USER (Right) */
+.control-system {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 0 0 auto;
+}
+
+.system-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #888;
+    padding: 2px 6px;
+    border: 1px solid #333;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.notification-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    background: #333;
+    border: 1px solid #555;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.notification-icon:hover {
+    background: #00ff41;
+    border-color: #00ff41;
+}
+
+.notification-icon.has-notification::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 6px;
+    height: 6px;
+    background: #ff0040;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.user-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #888;
+}
+
+.sign-on-link {
+    color: #888;
+    text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 2px 6px;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.sign-on-link:hover {
+    color: #00ff41;
+    border-color: #00ff41;
+    background: rgba(0, 255, 65, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .straylight-control-bar {
+        height: 44px;
+        font-size: 12px;
+    }
+    
+    .control-sections {
+        padding: 0 15px;
+    }
+    
+    .control-nav {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 11px;
+        padding: 2px 4px;
+    }
+    
+    .straylight-logo {
+        font-size: 16px;
+        letter-spacing: 1px;
+    }
+    
+    .system-time, .user-status {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .control-nav {
+        gap: 10px;
+    }
+    
+    .nav-link {
+        font-size: 10px;
+    }
+    
+    .straylight-logo {
+        font-size: 14px;
+    }
+    
+    .control-system {
+        gap: 10px;
+    }
+}
+
+/* Glitch effect for hover states */
+.glitch-effect {
+    position: relative;
+}
+
+.glitch-effect:hover::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    top: 0;
+    color: #ff0040;
+    background: transparent;
+    animation: glitch 0.3s ease-in-out;
+    opacity: 0.8;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+/* Body margin adjustment for fixed header */
+body.has-straylight-header {
+    margin-top: 48px;
+}
+
+@media (max-width: 768px) {
+    body.has-straylight-header {
+        margin-top: 44px;
+    }
+}
