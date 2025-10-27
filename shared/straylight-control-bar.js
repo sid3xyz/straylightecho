@@ -149,7 +149,7 @@ class StraylightControlBar {
             const cssLink = document.createElement('link');
             cssLink.id = 'straylight-control-bar-styles';
             cssLink.rel = 'stylesheet';
-            cssLink.href = './straylight-control-bar.css'; // Fixed relative path
+            cssLink.href = 'https://straylightecho.com/shared/straylight-control-bar.css'; // Absolute CDN path
             document.head.appendChild(cssLink);
         }
 
