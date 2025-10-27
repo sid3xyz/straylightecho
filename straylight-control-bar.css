@@ -9,11 +9,11 @@ Inspired by Neuromancer, cyberpunk aesthetics, and classic AOL interfaces
 
 /* STRAYLIGHT Control Bar Container */
 .straylight-control-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
     background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
     border-bottom: 1px solid #00ff41;
     box-shadow: 0 2px 10px rgba(0, 255, 65, 0.2);
@@ -22,7 +22,10 @@ Inspired by Neuromancer, cyberpunk aesthetics, and classic AOL interfaces
     font-size: 14px;
     color: #00ff41;
     overflow: hidden;
-    position: relative;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
 }
 
 /* Subtle scan line animation */
